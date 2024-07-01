@@ -1,0 +1,34 @@
+service: auto-return-lambda
+useDotenv: true
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: us-east-1
+  environment:
+    KIBO_TENANT: ${env:KIBO_TENANT}
+    KIBO_LOCALE: ${env:KIBO_LOCALE}
+    KIBO_CURRENCY: ${env:KIBO_CURRENCY}
+    KIBO_AUTH_HOST: ${env:KIBO_AUTH_HOST}
+    KIBO_CLIENT_ID: ${env:KIBO_CLIENT_ID}
+    KIBO_SHARED_SECRET: ${env:KIBO_SHARED_SECRET}
+    KIBO_API_ENV:  ${env:KIBO_API_ENV}
+
+functions:
+  autoReturn:
+    handler: dist/handler.main
+    timeout: 120
+    events:
+      - http:
+          path: main/
+          method: post
+
+plugins:
+  - serverless-offline
+
+package:
+  exclude:
+    - src/**
+    - tsconfig.json
+    - package-lock.json
+    - .gitignore
+

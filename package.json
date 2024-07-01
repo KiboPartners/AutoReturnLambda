@@ -1,0 +1,24 @@
+{
+  "name": "order-cancel-lambda",
+  "version": "1.0.0",
+  "description": "A Serverless Framework project for a Lambda function that runs every minute.",
+  "main": "handler.js",
+  "scripts": {
+    "build": "tsc",
+    "deploy": "npm run build && serverless deploy",
+    "start": "npm run build && serverless offline"
+  },
+  "dependencies": {
+    "@kibocommerce/rest-sdk": "^1.0.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.138",
+    "@types/node": "^20.12.12",
+    "serverless-offline": "^8.2.0",
+    "typescript": "^5.4.5"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
