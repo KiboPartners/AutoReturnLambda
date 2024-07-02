@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@kibocommerce/rest-sdk": "^1.0.0",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "mozu-node-sdk": "^2.15.13"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.138",

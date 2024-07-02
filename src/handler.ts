@@ -23,8 +23,11 @@ const configuration = Configuration.fromEnv()
 const shipmentResource = new ShipmentApi(configuration)
 
 export const main = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+  console.log(event.body)
   const kiboEvent = event.body ? JSON.parse(event.body) : null
   const workflowStateChangeEvent: ShipmentWorkflowStateChangedEvent = kiboEvent
+
+  console.log(JSON.stringify(workflowStateChangeEvent, null, 2))
 
   if (workflowStateChangeEvent) {
     const shipmentNumber = workflowStateChangeEvent.entityId
@@ -70,7 +73,7 @@ async function processShipmentItemsForReturn(shipment: EntityModelOfShipment) {
             },
             "reasons": [
               {
-                "reason": "Damaged or defective.",  //Can be custom reason
+                "reason": "TRADE IN",  //Can be custom reason
                 "quantity": item.quantity
               }
             ],
@@ -91,13 +94,20 @@ async function processShipmentItemsForReturn(shipment: EntityModelOfShipment) {
         "locationCode": process.env.DEFAULT_RETURN_LOCATION_CODE
       }
 
-      await returnResource.createReturn({ _return: returnPayload })
+      await returnResource.createReturnRaw({ _return: returnPayload }, adjustSiteHeader(shipment.siteId!))
       console.log(`Created return for shipment ${shipment.shipmentNumber}`)
     } catch (e) {
-      console.error(`Failed to create return for shipment ${shipment.shipmentNumber}`)
+      console.error(`Failed to create return for shipment ${shipment.shipmentNumber}. ${e}`)
     }
 
+  } else {
+    console.log(`No returns to create for shipment ${shipment.shipmentNumber}`)
   }
-  //if length not zero of filter
-  //create return paylaod and send
+}
+
+const adjustSiteHeader = (site: number) => {
+  return (incomingOptions: any) => {
+    incomingOptions.init.headers['x-vol-site'] = `${site}`
+    return incomingOptions.init
+  }
 }
